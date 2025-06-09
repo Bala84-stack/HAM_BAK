@@ -24,9 +24,6 @@ public class User {
 	 * for larger or layered applications
 	 */
 	
-	
-	
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

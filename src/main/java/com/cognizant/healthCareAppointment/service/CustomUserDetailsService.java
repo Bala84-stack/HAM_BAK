@@ -1,6 +1,8 @@
 package com.cognizant.healthCareAppointment.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.cognizant.healthCareAppointment.entity.User;
 import com.cognizant.healthCareAppointment.repository.UserRepository;
+import com.cognizant.healthCareAppointment.security.CustomUserDetails;
 
 
 @Service
@@ -25,15 +28,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 		User user=userrepo.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
 		
 		/*
-		 * We are passing User entity mail and password inside the
-		 * User(org.springframework.security.core.userdetails.User.User()) so the
-		 * credtioanls are sent to the Security groups from here
+		 * The User obj(user) is passed to the CustomUserDetails constructor to set the object,
+		 * cuz OBJ has all INFO of the fetched Data from REPO.. HERE the return type of loadUserbyUser.. 
+		 * is UserDetails i.e- Interface , and this interface is implemented by the CustomUserDetails
+		 * so we can return the obj of the Implemented class !
 		 * 
 		 */
+
 		
-		return new org.springframework.security.core.userdetails.User(user.getEmail(),
-				user.getPassword(),new ArrayList<>());
-		
+		return new CustomUserDetails(user);
 		
 	}
 	

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.healthCareAppointment.dto.LoginRequest;
+import com.cognizant.healthCareAppointment.entity.User;
+import com.cognizant.healthCareAppointment.security.CustomUserDetails;
 import com.cognizant.healthCareAppointment.util.JWTUtil;
 
 import jakarta.validation.Valid;
@@ -30,7 +32,7 @@ public class AuthController {
 	JWTUtil jwtUtil;
 	
 	@PostMapping("/authenticate")
-	public AuthResponse generateToken(@Valid @RequestBody LoginRequest authRequest, BindingResult result) {
+	public AuthResponse generateToken(@Valid @RequestBody LoginRequest authRequest, BindingResult result) throws Exception {
 		
 
 		try
@@ -38,15 +40,31 @@ public class AuthController {
 		Authentication authencation=authenticationManager.authenticate(
 		new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 		
-		System.out.println(authencation);
+		//System.out.println(authencation);
 		
-		return new AuthResponse(jwtUtil.getJwTToken(authRequest.getEmail()),"Authencation succesfull ");
+		/*
+		 * it gets the logged-in user's details after successful authentication.
+		 * getPrincipal() returns the object that holds user info — in our case, it's CustomerUserDetails
+		 * We cast it so we can access the full User object (like
+		 * name, role, ID) using customuserDetail.getUser(). Without CustomUserDetails,
+		 * we’d only get basic info like email and password — not the full user profile.
+		 */
+		
+		CustomUserDetails customuserDetail=(CustomUserDetails) authencation.getPrincipal();
+		
+		User user=customuserDetail.getUser(); // calling CUD's class for getting User object that has user INFO
+		
+		
+		String token=jwtUtil.getJwTToken(user);
+		
+		
+		return new AuthResponse(token,"Authencation succesfull ");
 		
 		}
 	
 		catch(AuthenticationException e)
 		{
-			throw new RuntimeException("Invalid Token");
+			throw new RuntimeException("Invalid Token ");
 		}
 	}
 }
