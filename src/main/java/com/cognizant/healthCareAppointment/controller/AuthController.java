@@ -1,5 +1,6 @@
 package com.cognizant.healthCareAppointment.controller;
 
+import com.cognizant.healthCareAppointment.dto.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.healthCareAppointment.dto.LoginRequest;
+import com.cognizant.healthCareAppointment.util.JWTUtil;
 
 import jakarta.validation.Valid;
 
@@ -24,25 +26,27 @@ public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
 	
+	@Autowired
+	JWTUtil jwtUtil;
+	
 	@PostMapping("/authenticate")
-	public ResponseEntity<String> generateToken(@Valid @RequestBody LoginRequest authRequest,BindingResult result) {
+	public AuthResponse generateToken(@Valid @RequestBody LoginRequest authRequest, BindingResult result) {
 		
-		
-		if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.getFieldError().getDefaultMessage());
-        }
-		
+
 		try
 		{
 		Authentication authencation=authenticationManager.authenticate(
 		new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 		
-		return ResponseEntity.ok("Authencation succesfull JWT will be generated");
-		}
+		System.out.println(authencation);
 		
+		return new AuthResponse(jwtUtil.getJwTToken(authRequest.getEmail()),"Authencation succesfull ");
+		
+		}
+	
 		catch(AuthenticationException e)
 		{
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Creditoanls");
+			throw new RuntimeException("Invalid Token");
 		}
 	}
 }
