@@ -11,8 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.cognizant.healthCareAppointment.entity.User;
+import com.cognizant.healthCareAppointment.security.CustomUserDetails;
 import com.cognizant.healthCareAppointment.service.CustomUserDetailsService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -52,4 +55,51 @@ public class JWTUtil  {
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
 	}
+	
+	
+	public String extractMailId(String token) throws Exception {
+		
+		
+		Claims body=extractClaims(token);
+	
+		//****** DEBUG token and body.getSubject here *****
+		
+		return body.getSubject(); 
+		//REturns the subject as we have mail or set mail in subject i.e-setSubject()in getJwTToken
+		//use global exception 	
+	}
+
+	// THis method has two usage so it is implemented in common here 
+	private Claims extractClaims(String token) {
+		return Jwts.parserBuilder()
+		.setSigningKey(key) // telling that key(Secret key)to decode
+		.build()
+		.parseClaimsJws(token) // parse everything from claim i.e from token
+		
+				/*
+				 * .parseClaimsJwt - > Only includes header and payload, no signature. 
+				 * Not secure — anyone can modify the token. 
+				 * .parseClaimsJws(token) -> Includes all 3 parts: header, payload, and signature.
+				 */
+
+		.getBody();
+	}
+	
+
+	public boolean validateToken(String userMailId, CustomUserDetails userDetail,String token) {
+		
+		// check if userMailId is same as userDetail(Retrieved from JPA)
+		// check if token is not expired 
+									                            
+		return userDetail.getUserMailId().equals(userMailId) && !isTokenExpired(token);
+	}
+
+	private boolean isTokenExpired(String token) {
+		return extractClaims(token).getExpiration().before(new Date());
+	}
+	
+	
 }
+
+
+

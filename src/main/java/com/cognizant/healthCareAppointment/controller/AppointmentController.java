@@ -16,11 +16,13 @@ public class AppointmentController {
 
     @Autowired private AppointmentService appointmentService;
 
-    @GetMapping("/available-doctors")
-    public List<DoctorInfoDTO> getAvailableDoctorsForTomorrow() {
-
-        return appointmentService.getAvailableDoctorsForTomorrow();
-    }
+	
+	  @GetMapping("/available-doctors") 
+	  public List<DoctorInfoDTO> getAvailableDoctorsForTomorrow() {
+	  
+	  return appointmentService.getAvailableDoctorsForTomorrow(); 
+	  }
+	 
 
     @GetMapping("/doctor/{doctorId}/timeslots")
     public List<String> getAvailableSlots(@PathVariable Long doctorId) {

@@ -52,6 +52,8 @@ public class AuthController {
 		
 		CustomUserDetails customuserDetail=(CustomUserDetails) authencation.getPrincipal();
 		
+		//DEBUG here
+		
 		User user=customuserDetail.getUser(); // calling CUD's class for getting User object that has user INFO
 		
 		
