@@ -17,9 +17,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 //We must need to add the JWT AUTHentication before the usernameandpassword auth so we are using this class
 
+@Slf4j
 @Component
 public class JWTAuthFilters extends OncePerRequestFilter {
 
@@ -66,9 +68,11 @@ public class JWTAuthFilters extends OncePerRequestFilter {
 			 * Set all request related details to the authToken, so the Security-context
 			 * will have more information regarding the request
 			 */
+				log.info("authentiated");
 				
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 				
+				log.info("authentiated 2nd stage ");
 			}			
 		}
 		
@@ -91,7 +95,7 @@ public class JWTAuthFilters extends OncePerRequestFilter {
 	}catch(Exception e) {
 		
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.getWriter().write("Authentication Failes");
+		response.getWriter().write("Authentication Failed");
 		
 	}
 		

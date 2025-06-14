@@ -7,6 +7,7 @@ import com.cognizant.healthCareAppointment.service.DoctorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -18,12 +19,14 @@ public class DoctorController {
     @Autowired
     private DoctorService doctorService;
 
-    @GetMapping("/{doctorId}/appointments")
+    @PreAuthorize("hasRole('Doctor')")
+    @GetMapping("/{doctorId}/appointments") // Does doctor has any appoitment today ?
     public List<AppointmentResponseDTO> getDoctorAppointments(@PathVariable Long doctorId) {
 
         return doctorService.getDoctorAppointments(doctorId);
     }
 
+    @PreAuthorize("hasRole('Doctor')")
     @PostMapping("/consultation")
     public ResponseEntity<String> addConsultation(@Valid @RequestBody ConsultationRequest request, BindingResult result) {
         if(result.hasErrors()){
@@ -31,7 +34,9 @@ public class DoctorController {
         }
         return doctorService.addConsultation(request);
     }
-    @GetMapping("/{doctorId}/consultations")
+    
+    @PreAuthorize("hasRole('Doctor')")
+    @GetMapping("/{doctorId}/consultations") // use this for front-end for the current doctor 
     public List<ConsultationResponseDTO> getDoctorConsultations(@PathVariable Long doctorId) {
 
         return doctorService.getDoctorConsultations(doctorId);

@@ -5,6 +5,7 @@ import com.cognizant.healthCareAppointment.service.AvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class AvailabilityController {
     @Autowired
     private AvailabilityService availabilityService;
 
-
+    @PreAuthorize("hasRole('Doctor')")
     @PostMapping("/update-availability")
     public ResponseEntity<String> updateAvailability(@Valid @RequestBody AvailabilityRequest request, BindingResult result) {
         if(result.hasErrors()){

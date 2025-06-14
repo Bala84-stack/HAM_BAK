@@ -10,6 +10,7 @@ import com.cognizant.healthCareAppointment.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +31,23 @@ public class UserController {
         return userService.register(request);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request, BindingResult result) {
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.getFieldError().getDefaultMessage());
-        }
-        return userService.login(request);
-    }
+	/*
+	 * @PostMapping("/login") public ResponseEntity<String>
+	 * login(@Valid @RequestBody LoginRequest request, BindingResult result) {
+	 * if(result.hasErrors()){ return
+	 * ResponseEntity.badRequest().body(result.getFieldError().getDefaultMessage());
+	 * } return userService.login(request);
+	 
+    }*/
+    
+    @PreAuthorize("hasRole('Patient')")
     @GetMapping("/{patientId}/appointments")
     public List<AppointmentResponseDTO> getDoctorAppointments(@PathVariable Long patientId) {
 
         return userService.getDoctorAppointments(patientId);
     }
+    
+    @PreAuthorize("hasRole('Patient')")
     @GetMapping("/{patientId}/consultations")
     public List<ConsultationResponseDTO> getPatientConsultations(@PathVariable Long patientId) {
 

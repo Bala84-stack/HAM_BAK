@@ -92,11 +92,12 @@ public class AppointmentService {
 
     }
 
-    public ResponseEntity<String> bookAppointment(
-            BookRequest request
-    ) {
+    public ResponseEntity<String> bookAppointment(BookRequest request) {
 
         LocalDate tomorrow = LocalDate.now().plusDays(1);
+        
+        
+        
         if (appointmentRepo.existsByDoctor_UserIdAndDateAndTimeSlot(request.getDoctorId(), tomorrow, request.getTimeSlot())) {
             return ResponseEntity.badRequest().body("Slot already booked");
             
@@ -105,7 +106,15 @@ public class AppointmentService {
         }
         User patient = userRepo.findById(request.getPatientId()).orElseThrow(() -> new PatientNotFoundException("Patient with ID " + request.getPatientId() + " not found"));
         User doctor = userRepo.findById(request.getDoctorId()).orElseThrow(() -> new DoctorNotFoundException("Doctor with ID " + request.getDoctorId() + " not found"));
-
+        
+        Availability availability=availabilityRepo.findByDoctorIdAndDate(request.getDoctorId(),tomorrow);
+        
+        // Should not book slots beyond the given time 
+        if(availability==null || request.getTimeSlot().isAfter(availability.getEndTime()) || request.getTimeSlot().equals(availability.getEndTime())) 
+        {
+        	return ResponseEntity.badRequest().body("Cannot book beyond doctors availablilty");
+        }
+        
         Appointment a = new Appointment();
         a.setPatient(patient);
         a.setDoctor(doctor);

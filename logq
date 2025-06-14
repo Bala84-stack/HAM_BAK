@@ -1,0 +1,23 @@
+[33mcommit 067c2968d2c3a807c9779c4e91affe7655b42a53[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Bala84-stack <Balaji.S223534@cognizant.com>
+Date:   Wed Jun 11 23:37:45 2025 +0530
+
+    token validation completed. Implemented in JWTAuthFilter and JWTUtil classes, and added jwtAuthFilter to take control before UsernamePasswordAuthencationFilter -> check SecurityConfig class for more insigts
+
+[33mcommit 0ae55bc2b0bae1c817af4a7be745dbaad9f88f13[m
+Author: Bala84-stack <Balaji.S223534@cognizant.com>
+Date:   Mon Jun 9 23:20:38 2025 +0530
+
+    Added ID,Name and role in the token(claims). Moved the secrect key to APP.PROP . CustomUserDetails class created and implemented UserDetails to store and retirieve data from the CUD's class
+
+[33mcommit ce168a79d5c2054ccae4e45f7ecfe8d2fda931d6[m
+Author: Bala84-stack <Balaji.S223534@cognizant.com>
+Date:   Mon Jun 9 16:13:11 2025 +0530
+
+    JWT Token Generation completed
+
+[33mcommit 3bd6978bef892c502653d9ec3f8af03d482d5192[m
+Author: S <2403431@cognizant.com>
+Date:   Sun Jun 8 16:32:27 2025 +0530
+
+    Added Spring Security Authentication for AuthController(For login-> use AuthController to loign) and added password encoded to Register endpoint(i.e on Service), NEW files added -> AuthController,CustomUserDetailsService and SecurityConfig(pack)

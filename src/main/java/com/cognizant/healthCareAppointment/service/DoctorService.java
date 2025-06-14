@@ -26,7 +26,7 @@ public class DoctorService {
     private ConsultationRepository consultationRepo;
 
     public List<AppointmentResponseDTO> getDoctorAppointments( Long doctorId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(); // .plusDays(1) for check use this 
         List<Appointment> appointments= appointmentRepo.findByDoctor_UserIdAndDate(doctorId, today);
         return appointments.stream().map(a->new AppointmentResponseDTO(a.getAppointmentId(),a.getDoctor().getName(),a.getPatient().getName(),a.getDate(),a.getTimeSlot(),a.getStatus().name())).toList();
     }
@@ -42,7 +42,7 @@ public class DoctorService {
         }
 
         Consultation consultation = new Consultation();
-        consultation.setAppointment(appointment);
+        consultation.setAppointment(appointment); // setting up this for P-key for F-key in Appoitment table
         consultation.setNotes(request.getNotes());
         consultation.setPrescription(request.getPrescription());
         consultationRepo.save(consultation);
